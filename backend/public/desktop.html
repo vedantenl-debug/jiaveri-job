@@ -146,6 +146,9 @@ text-align:center;
 margin-top:60px;
 
 }
+.overlay{position:fixed;inset:0;background:rgba(22,26,46,.55);display:flex;align-items:center;justify-content:center;z-index:999;padding:16px;}
+.overlay .modal{background:#fff;border-radius:16px;padding:26px;max-width:340px;width:100%;position:relative;box-shadow:0 20px 50px rgba(0,0,0,.25);}
+.overlay .modal-close{position:absolute;top:10px;right:14px;background:none;border:none;font-size:22px;line-height:1;color:var(--ink-soft);}
 </style>
 </head>
 <body>
@@ -172,7 +175,7 @@ function logout(){ localStorage.removeItem('JS_token'); localStorage.removeItem(
 function statusLabel(s){ return {applied:'अर्ज केला', interview:'इंटरव्ह्यू', selected:'निवड झाली', rejected:'नाकारले', pending:'प्रलंबित', approved:'मंजूर', blocked:'ब्लॉक'}[s]||s; }
 
 let appState = { page:'dashboard', jobFilter:'All', authMode:'login', authRole:'candidate', authError:'',
-  seekerTab:'search', companyTab:'vacancies', adminTab:'companies' };
+  seekerTab:'search', companyTab:'vacancies', adminTab:'companies', upiModalOpen:false, upiModalJobId:null };
 
 /* ============ ROOT RENDER ============ */
 async function render(){
@@ -191,345 +194,25 @@ async function render(){
 }
 
 function renderGuest(){
-
   const f = appState;
-
   const showRegister = f.authRole !== 'admin';
-
   return `
-
 <div id="deskGuest">
-
-<!-- HERO SECTION -->
-
-<div style="width:100%;background:linear-gradient(135deg,#0d47a1,#1976d2);color:#fff;padding:60px 40px;border-radius:18px;margin-bottom:30px;">
-
-<h1 style="font-size:42px;margin-bottom:15px;">
-Job Setu
-</h1>
-
-<h2 style="color:#FFD54F;margin-bottom:20px;">
-Latur District Job Portal
-</h2>
-
-<p style="font-size:18px;max-width:700px;line-height:30px;">
-
-Connecting Local Talent with Trusted Employers Across Latur District.
-
-Find jobs, hire employees and grow together.
-
-</p>
-
-<div style="margin-top:30px;display:flex;gap:15px;flex-wrap:wrap;">
-
-<button class="btn btn-primary">
-Find Jobs
-</button>
-
-<button class="btn btn-outline">
-Post a Job
-</button>
-
+  <div class="card modal-form" style="width:420px;background:#fff;text-align:left;">
+    <div class="role-pick">
+      <button data-role="candidate" class="${f.authRole==='candidate'?'active':''}">Job Seeker</button>
+      <button data-role="company" class="${f.authRole==='company'?'active':''}">Company</button>
+      <button data-role="admin" class="${f.authRole==='admin'?'active':''}">Admin</button>
+    </div>
+    ${f.authError ? `<div class="err-box">${f.authError}</div>` : ''}
+    ${f.authMode==='register' ? `<div class="field"><label>${f.authRole==='company'?'Company Name':'Full Name'}</label><input id="nameInput"></div>` : ''}
+    <div class="field"><label>Mobile Number</label><input id="phoneInput"></div>
+    <div class="field"><label>Password</label><input id="passwordInput" type="password"></div>
+    <button class="btn btn-primary" id="authSubmitBtn" style="width:100%;">${f.authMode==='register'?'Register':'Login'}</button>
+    ${showRegister ? `<p style="text-align:center;margin-top:15px;">${f.authMode==='register'?'Already have an account?':'New User?'} <a id="toggleAuth" style="cursor:pointer;color:#1565c0;font-weight:bold;">${f.authMode==='register'?'Login':'Register'}</a></p>` : ''}
+  </div>
 </div>
-<div style="display:flex;justify-content:space-between;align-items:center;gap:50px;">
-
-<div style="flex:1;">
-
-<h1 style="font-size:52px;margin-bottom:15px;">
-Job Setu
-</h1>
-
-<h2 style="color:#FFD54F;margin-bottom:20px;">
-Latur District Job Portal
-</h2>
-
-<p style="font-size:18px;line-height:32px;">
-
-Connecting Local Talent with Trusted Employers.
-
-Find Jobs, Hire Employees and Grow Together.
-
-</p>
-
-<div style="margin-top:30px;">
-
-<button class="btn btn-primary">
-
-Find Jobs
-
-</button>
-
-<button class="btn btn-outline">
-
-Post Job
-
-</button>
-
-</div>
-
-</div>
-
-<div class="card modal-form"
-
-style="width:420px;background:white;">
-
-<h2 style="text-align:center;color:#1565c0;">
-
-Login
-
-</h2>
-
-<!-- इथे Login Form राहील -->
-
-</div>
-
-</div>
-</div>
-
-<!-- FEATURES -->
-
-<div class="grid cols-3">
-
-<div class="card">
-
-<h3>For Job Seekers</h3>
-
-<p>
-
-Apply for jobs from verified companies in Latur District.
-
-</p>
-
-</div>
-
-<div class="card">
-
-<h3>For Companies</h3>
-
-<p>
-
-Post vacancies and hire skilled local candidates.
-
-</p>
-
-</div>
-
-<div class="card">
-
-<h3>Secure Platform</h3>
-
-<p>
-
-Safe registration, verified employers and trusted hiring.
-
-</p>
-
-</div>
-
-</div>
-
-<br>
-
-<!-- LOGIN CARD -->
-
-<div class="card modal-form" style="max-width:420px;margin:auto;text-align:left;">
-
-<div class="role-pick">
-
-<button data-role="candidate"
-
-class="${f.authRole==='candidate'?'active':''}">
-
-Job Seeker
-
-</button>
-
-<button data-role="company"
-
-class="${f.authRole==='company'?'active':''}">
-
-Company
-
-</button>
-
-<button data-role="admin"
-
-class="${f.authRole==='admin'?'active':''}">
-
-Admin
-
-</button>
-
-</div>
-
-${f.authError ? `<div class="err-box">${f.authError}</div>` : ''}
-
-${f.authMode==='register' ?
-
-`<div class="field">
-
-<label>
-
-${f.authRole==='company'?'Company Name':'Full Name'}
-
-</label>
-
-<input id="nameInput">
-
-</div>`
-
-:''}
-
-<div class="field">
-
-<label>Mobile Number</label>
-
-<input id="phoneInput">
-
-</div>
-
-<div class="field">
-
-<label>Password</label>
-
-<input id="passwordInput" type="password">
-
-</div>
-
-<button
-
-class="btn btn-primary"
-
-id="authSubmitBtn"
-
-style="width:100%;">
-
-${f.authMode==='register'?'Register':'Login'}
-
-</button>
-
-${showRegister ?
-
-`<p style="text-align:center;margin-top:15px;">
-
-${f.authMode==='register'?'Already have an account?':'New User?'}
-
-<a
-
-id="toggleAuth"
-
-style="cursor:pointer;color:#1565c0;font-weight:bold;">
-
-${f.authMode==='register'?'Login':'Register'}
-
-</a>
-
-</p>`
-
-:''}
-
-</div>
-
-<br>
-
-<!-- ABOUT -->
-
-<div class="card">
-
-<h2>About Job Setu</h2>
-
-<p>
-
-Job Setu is a recruitment platform specially developed for
-
-Latur District.
-
-Our aim is to connect local employers with talented job
-
-seekers through a simple and transparent hiring process.
-
-</p>
-
-</div>
-
-<br>
-
-<!-- PRICING -->
-
-<div class="grid cols-2">
-
-<div class="card">
-
-<h2>Candidate Monthly Membership</h2>
-
-<h1>₹99 <span style="font-size:18px;">/ Month</span></h1>
-
-<p>
-✔ Unlimited Job Applications<br>
-✔ Resume Upload<br>
-✔ Application Tracking<br>
-✔ Monthly Membership
-</p>
-</div>
-
-<div class="card">
-
-<h2>Company Monthly Membership</h2>
-
-<h1>₹199 <span style="font-size:18px;">/ Month</span></h1>
-
-<p>
-✔ Unlimited Job Posting<br>
-✔ Candidate Database Access<br>
-✔ Application Management<br>
-✔ Monthly Membership
-</p>
-</div>
-
-</div>
-
-<br>
-
-<!-- CONTACT -->
-
-<div class="card">
-
-<h2>Contact Us</h2>
-
-<p>
-
-📞 9404180011
-
-</p>
-
-<p>
-
-📍 Latur, Maharashtra
-
-</p>
-
-<p>
-
-💳 UPI : jobsetu2026@ybl
-
-</p>
-
-</div>
-
-<br>
-
-<!-- FOOTER -->
-
-<div style="text-align:center;padding:30px;color:#666;">
-
-© 2026 Job Setu | Latur District Job Portal
-
-</div>
-
-</div>
-
 `;
-
 }
 
 async function renderShell(user){
@@ -555,6 +238,24 @@ async function renderShell(user){
     <div id="deskMain">
       <div id="deskTopbar"><h2 style="margin:0;font-size:17px;">${page==='notifications'?'सूचना':'Dashboard'}</h2><div class="avatar">${user.name.slice(0,1)}</div></div>
       <div id="deskContent">${content}</div>
+    </div>
+  </div>${upiModal()}`;
+}
+function upiModal(){
+  if(!appState.upiModalOpen) return '';
+  const upiId = 'Jobsetu2026@ybl';
+  const upiLink = `upi://pay?pa=${upiId}&pn=JobSetu&am=99&cu=INR`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiLink)}`;
+  return `
+  <div class="overlay" id="upiOverlay">
+    <div class="modal" style="text-align:center;">
+      <button class="modal-close" id="upiCloseBtn">×</button>
+      <h3>₹99 सदस्यत्व शुल्क</h3>
+      <p class="subtle">खालील UPI ID वर पैसे पाठवा, किंवा QR कोड स्कॅन करा.</p>
+      <img src="${qrUrl}" alt="UPI QR" style="width:220px;height:220px;margin:10px 0;border:1px solid var(--line);border-radius:10px;">
+      <div class="card" style="margin:10px 0;font-weight:800;font-size:16px;">${upiId}</div>
+      <p class="subtle" style="font-size:12px;">पैसे पाठवल्यावर खाली बटण दाबा — Admin पडताळून सदस्यत्व सक्रिय करेल.</p>
+      <button class="btn btn-primary" id="upiPaidBtn" style="width:100%;margin-top:8px;">मी ₹99 पाठवले</button>
     </div>
   </div>`;
 }
