@@ -227,7 +227,6 @@ async function renderShell(user){
   return `
   <div id="deskShell">
     <div id="deskSidebar">
-      <div class="brand"><span class="stamp-mini">JS</span> JobSetu</div>
       <div class="sidebar-role"><div class="rname">${user.name}</div><div class="rtype">${user.role==='admin'?'Administrator':user.role==='company'?'Company':'Job Seeker'}</div></div>
       <div class="sidebar-nav">
         <button class="${page==='dashboard'?'active':''}" data-page="dashboard">🏠 Dashboard</button>
