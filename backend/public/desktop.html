@@ -6,7 +6,6 @@
 <title>JobSetu — Desktop Software</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <style>
 :root{--ink:#161A2E;--ink-soft:#3A3F5C;--paper:#EFEAE0;--card:#FFFFFF;--marigold:#E8A63B;--marigold-dark:#C6841E;--stamp-green:#2F6E4F;--stamp-red:#B23A2E;--line:#DCD5C4;--radius:14px;}
 *{box-sizing:border-box;}
@@ -244,18 +243,19 @@ async function renderShell(user){
 function upiModal(){
   if(!appState.upiModalOpen) return '';
   const upiId = 'Jobsetu2026@ybl';
-  const upiLink = `upi://pay?pa=${upiId}&pn=JobSetu&am=99&cu=INR`;
+  const amount = appState.upiModalAmount || 99;
+  const upiLink = `upi://pay?pa=${upiId}&pn=JobSetu&am=${amount}&cu=INR`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiLink)}`;
   return `
   <div class="overlay" id="upiOverlay">
     <div class="modal" style="text-align:center;">
       <button class="modal-close" id="upiCloseBtn">×</button>
-      <h3>₹99 सदस्यत्व शुल्क</h3>
+      <h3>₹${amount} सदस्यत्व शुल्क</h3>
       <p class="subtle">खालील UPI ID वर पैसे पाठवा, किंवा QR कोड स्कॅन करा.</p>
       <img src="${qrUrl}" alt="UPI QR" style="width:220px;height:220px;margin:10px 0;border:1px solid var(--line);border-radius:10px;">
       <div class="card" style="margin:10px 0;font-weight:800;font-size:16px;">${upiId}</div>
       <p class="subtle" style="font-size:12px;">पैसे पाठवल्यावर खाली बटण दाबा — Admin पडताळून सदस्यत्व सक्रिय करेल.</p>
-      <button class="btn btn-primary" id="upiPaidBtn" style="width:100%;margin-top:8px;">मी ₹99 पाठवले</button>
+      <button class="btn btn-primary" id="upiPaidBtn" style="width:100%;margin-top:8px;">मी ₹${amount} पाठवले</button>
     </div>
   </div>`;
 }
@@ -484,6 +484,8 @@ function attachHandlers(user){
     }catch(e){
       if(e.message.includes('सदस्यत्व')){
         appState.upiModalOpen = true;
+        appState.upiModalAmount = 99;
+        appState.upiModalRole = 'candidate';
         appState.upiModalJobId = jobId;
         render();
       } else {
@@ -494,14 +496,16 @@ function attachHandlers(user){
   const upiPaidBtn = document.getElementById('upiPaidBtn');
   if(upiPaidBtn) upiPaidBtn.onclick = async()=>{
     try{
-      await api('/applications/notify-payment', {method:'POST'});
-      alert('धन्यवाद! तुमचं पेमेंट Admin कडे पडताळणीसाठी पाठवलं आहे. साधारण काही तासांत सदस्यत्व सक्रिय होईल — मग परत येऊन Apply करा.');
+      const endpoint = appState.upiModalRole === 'company' ? '/payments/notify-manual' : '/applications/notify-payment';
+      await api(endpoint, {method:'POST'});
+      alert('धन्यवाद! तुमचं पेमेंट Admin कडे पडताळणीसाठी पाठवलं आहे. साधारण काही तासांत सदस्यत्व सक्रिय होईल.');
       appState.upiModalOpen = false;
       render();
     }catch(e){ alert(e.message); }
   };
   const upiCloseBtn = document.getElementById('upiCloseBtn');
-  if(upiCloseBtn) upiCloseBtn.onclick = ()=>{ appState.upiModalOpen = false; render(); };  document.querySelectorAll('[data-deletejob]').forEach(b=>b.onclick=async()=>{
+  if(upiCloseBtn) upiCloseBtn.onclick = ()=>{ appState.upiModalOpen = false; render(); };
+  document.querySelectorAll('[data-deletejob]').forEach(b=>b.onclick=async()=>{
     if(!confirm('ही व्हॅकन्सी डिलीट करायची आहे का?')) return;
     try{ await api('/jobs/'+b.dataset.deletejob, {method:'DELETE'}); render(); }catch(e){ alert(e.message); }
   });
@@ -550,36 +554,11 @@ function attachHandlers(user){
     try{ await api('/profile/candidate/me/resume', {method:'POST', body: fd}); alert('Resume अपलोड झाला.'); render(); }catch(e){ alert(e.message); }
   };
   const payBtn = document.getElementById('payBtn');
-    if(payBtn) payBtn.onclick = async function(){
-      try{
-        const order = await api('/payments/create-order', {method:'POST'});
-        const options = {
-          key: order.key_id,
-          amount: order.amount*100,
-          currency: 'INR',
-          name: 'JobSetu',
-          description: 'सदस्यत्व शुल्क',
-          order_id: order.order_id,
-          handler: async function(response){
-            try{
-              const verify = await api('/payments/verify', {method:'POST', body: JSON.stringify({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature
-            })});
-            alert('पेमेंट यशस्वी! ₹' + verify.amount + ' — सदस्यत्व ' + verify.expiry + ' पर्यंत सक्रिय.');
-            render();
-          }catch(e){
-            alert('पेमेंट पडताळणी अयशस्वी: ' + e.message);
-          }
-        },
-        theme: { color: '#E8A63B' }
-      };
-      const rzp = new Razorpay(options);
-      rzp.open();
-    }catch(e){
-      alert(e.message);
-    }
+  if(payBtn) payBtn.onclick = ()=>{
+    appState.upiModalOpen = true;
+    appState.upiModalAmount = 200;
+    appState.upiModalRole = 'company';
+    render();
   };
 }
 
