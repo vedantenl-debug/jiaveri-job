@@ -214,7 +214,7 @@ function upiModal(){
       <p class="subtle">खालील UPI ID वर पैसे पाठवा, किंवा QR कोड स्कॅन करा.</p>
       <img src="${qrUrl}" alt="UPI QR" style="width:200px;height:200px;margin:10px 0;border:1px solid var(--line);border-radius:10px;">
       <div class="card mono" style="margin:10px 0;font-weight:800;font-size:15px;">${upiId}</div>
-      <p class="subtle" style="font-size:11.5px;">पैसे पाठवल्यावर खाली बटण दाबा — Admin पडताळून सदस्यत्व सक्रिय करेल.</p>
+      <p class="subtle" style="font-size:11.5px;">पैसे पाठवल्यावर <b>पेमेंटचा स्क्रीनशॉट WhatsApp वर 9404180011 या नंबरवर पाठवा</b>. Admin पडताळून सदस्यत्व सक्रिय करेल.</p>
       <button class="btn btn-primary" id="upiPaidBtn" style="width:100%;margin-top:8px;">मी ₹${amount} पाठवले</button>
     </div>
   </div>`;
@@ -346,7 +346,17 @@ async function adminDashboard(){
     <div class="card" style="flex:1;min-width:120px;"><div style="font-size:20px;font-weight:800;">${pendingCo}</div><div class="subtle">प्रलंबित कंपनी</div></div>
     <div class="card" style="flex:1;min-width:120px;"><div style="font-size:20px;font-weight:800;">${pendingJobs}</div><div class="subtle">प्रलंबित व्हॅकन्सी</div></div>
     <div class="card" style="flex:1;min-width:120px;"><div style="font-size:20px;font-weight:800;">${candidates.length}</div><div class="subtle">एकूण उमेदवार</div></div>
-  </div>`;
+  </div>
+  <h3 style="font-size:15px;margin-top:16px;">सर्व उमेदवार</h3>
+  ${candidates.map(c=>{
+    const resumeLine = c.resume_path ? '<a href="/uploads/'+encodeURIComponent(c.resume_path)+'" target="_blank" style="color:var(--marigold-dark);">'+c.resume_path+'</a>' : 'Resume नाही';
+    return `<div class="card">
+      <div class="job-title">${c.name}</div><div class="job-meta">${c.category} · ${c.phone}</div>
+      <div class="subtle mono" style="margin:4px 0;">${resumeLine}</div>
+      <div class="subtle">सदस्यत्व: ${c.membership_active?'✅ सक्रिय':'❌ निष्क्रिय'}</div>
+      <div class="job-actions"><button class="btn btn-danger" data-deletecand="${c.id}">काढून टाका</button></div>
+    </div>`;
+  }).join('') || '<div class="empty">अजून कोणीही नोंदणी केलेली नाही.</div>'}`;
 }
 async function adminCompanies(){
   const companies = await api('/admin/companies');
@@ -356,6 +366,7 @@ async function adminCompanies(){
     <div class="job-actions">
       ${c.status!=='approved'?`<button class="btn btn-green" data-costatus="${c.id}:approved">मंजूर करा</button>`:''}
       ${c.status!=='blocked'?`<button class="btn btn-danger" data-costatus="${c.id}:blocked">ब्लॉक करा</button>`:`<button class="btn btn-ghost" data-costatus="${c.id}:approved">अनब्लॉक</button>`}
+      <button class="btn btn-danger" data-deleteco="${c.id}">काढून टाका</button>
     </div></div>`).join('');
 }
 async function adminJobs(){
@@ -431,6 +442,14 @@ function attachHandlers(user){
   document.querySelectorAll('[data-deletejob]').forEach(b=>b.onclick=async()=>{
     if(!confirm('ही व्हॅकन्सी डिलीट करायची आहे का?')) return;
     try{ await api('/jobs/'+b.dataset.deletejob, {method:'DELETE'}); render(); }catch(e){ alert(e.message); }
+  });
+  document.querySelectorAll('[data-deletecand]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('हा उमेदवार कायमचा डिलीट करायचा आहे का? त्याचे सर्व अर्जही मिटतील.')) return;
+    try{ await api('/admin/candidates/'+b.dataset.deletecand, {method:'DELETE'}); render(); }catch(e){ alert(e.message); }
+  });
+  document.querySelectorAll('[data-deleteco]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('ही कंपनी कायमची डिलीट करायची आहे का? त्यांच्या सर्व व्हॅकन्सी व अर्जही मिटतील.')) return;
+    try{ await api('/admin/companies/'+b.dataset.deleteco, {method:'DELETE'}); render(); }catch(e){ alert(e.message); }
   });
   document.querySelectorAll('[data-appstatus]').forEach(b=>b.onclick=async()=>{
     const [id,status]=b.dataset.appstatus.split(':');
