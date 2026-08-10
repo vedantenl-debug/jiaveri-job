@@ -253,7 +253,7 @@ function upiModal(){
       <p class="subtle">खालील UPI ID वर पैसे पाठवा, किंवा QR कोड स्कॅन करा.</p>
       <img src="${qrUrl}" alt="UPI QR" style="width:220px;height:220px;margin:10px 0;border:1px solid var(--line);border-radius:10px;">
       <div class="card" style="margin:10px 0;font-weight:800;font-size:16px;">${upiId}</div>
-      <p class="subtle" style="font-size:12px;">पैसे पाठवल्यावर खाली बटण दाबा — Admin पडताळून सदस्यत्व सक्रिय करेल.</p>
+      <p class="subtle" style="font-size:12px;">पैसे पाठवल्यावर <b>पेमेंटचा स्क्रीनशॉट WhatsApp वर 9404180011 या नंबरवर पाठवा</b>. Admin पडताळून सदस्यत्व सक्रिय करेल.</p>
       <button class="btn btn-primary" id="upiPaidBtn" style="width:100%;margin-top:8px;">मी ₹${amount} पाठवले</button>
     </div>
   </div>`;
@@ -405,16 +405,17 @@ async function adminCompanies(){
   ${companies.map(c=>`<tr><td>${c.name}</td><td>${c.category}</td><td>${c.location}</td>
     <td><span class="badge-status badge-${c.status}">${statusLabel(c.status)}</span></td>
     <td>${c.status!=='approved'?`<button class="btn btn-green" data-costatus="${c.id}:approved">मंजूर करा</button>`:''}
-        ${c.status!=='blocked'?`<button class="btn btn-danger" data-costatus="${c.id}:blocked">ब्लॉक करा</button>`:`<button class="btn btn-ghost" data-costatus="${c.id}:approved">अनब्लॉक</button>`}</td>
+        ${c.status!=='blocked'?`<button class="btn btn-danger" data-costatus="${c.id}:blocked">ब्लॉक करा</button>`:`<button class="btn btn-ghost" data-costatus="${c.id}:approved">अनब्लॉक</button>`}
+        <button class="btn btn-danger" data-deleteco="${c.id}">काढून टाका</button></td>
   </tr>`).join('')}</tbody></table>`;
 }
 async function adminCandidates(){
   const candidates = await api('/admin/candidates');
   return `<p class="subtle" style="margin-bottom:10px;">Admin ला नेहमी सर्व उमेदवारांचा पूर्ण डेटा दिसतो.</p>
-  <table class="table"><thead><tr><th>नाव</th><th>Category</th><th>मोबाईल</th><th>Resume</th><th>सदस्यत्व</th></tr></thead><tbody>
+  <table class="table"><thead><tr><th>नाव</th><th>Category</th><th>मोबाईल</th><th>Resume</th><th>सदस्यत्व</th><th></th></tr></thead><tbody>
   ${candidates.map(c=>{
     const resumeCell = c.resume_path ? '<a href="/uploads/'+encodeURIComponent(c.resume_path)+'" target="_blank" style="color:var(--marigold-dark);text-decoration:underline;">'+c.resume_path+'</a>' : '-';
-    return '<tr><td>'+c.name+'</td><td>'+c.category+'</td><td>'+c.phone+'</td><td class="mono">'+resumeCell+'</td><td>'+(c.membership_active?'✅ सक्रिय':'❌ निष्क्रिय')+'</td></tr>';
+    return '<tr><td>'+c.name+'</td><td>'+c.category+'</td><td>'+c.phone+'</td><td class="mono">'+resumeCell+'</td><td>'+(c.membership_active?'✅ सक्रिय':'❌ निष्क्रिय')+'</td><td><button class="btn btn-danger" data-deletecand="'+c.id+'">काढून टाका</button></td></tr>';
   }).join('')}
   </tbody></table>`;
 }
@@ -520,6 +521,14 @@ function attachHandlers(user){
   document.querySelectorAll('[data-costatus]').forEach(b=>b.onclick=async()=>{
     const [id,status]=b.dataset.costatus.split(':');
     try{ await api('/admin/companies/'+id+'/status', {method:'PUT', body: JSON.stringify({status})}); render(); }catch(e){ alert(e.message); }
+  });
+  document.querySelectorAll('[data-deleteco]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('ही कंपनी कायमची डिलीट करायची आहे का? त्यांच्या सर्व व्हॅकन्सी व अर्जही मिटतील.')) return;
+    try{ await api('/admin/companies/'+b.dataset.deleteco, {method:'DELETE'}); render(); }catch(e){ alert(e.message); }
+  });
+  document.querySelectorAll('[data-deletecand]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('हा उमेदवार कायमचा डिलीट करायचा आहे का? त्याचे सर्व अर्जही मिटतील.')) return;
+    try{ await api('/admin/candidates/'+b.dataset.deletecand, {method:'DELETE'}); render(); }catch(e){ alert(e.message); }
   });
   document.querySelectorAll('[data-jobapprove]').forEach(b=>b.onclick=async()=>{
     const [id,status]=b.dataset.jobapprove.split(':');
