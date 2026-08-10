@@ -11,7 +11,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#161A2E">
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <style>
 :root{--ink:#161A2E;--ink-soft:#3A3F5C;--paper:#EFEAE0;--card:#FFFFFF;--marigold:#E8A63B;--marigold-dark:#C6841E;--stamp-green:#2F6E4F;--stamp-red:#B23A2E;--line:#DCD5C4;--radius:14px;}
 *{box-sizing:border-box;}
@@ -73,6 +72,9 @@ button{font-family:inherit;cursor:pointer;}
 .stamp{display:inline-flex;align-items:center;gap:5px;font-family:'Archivo Black';font-size:10px;color:var(--stamp-green);border:2px solid var(--stamp-green);border-radius:6px;padding:3px 7px;transform:rotate(-3deg);}
 .stamp.red{color:var(--stamp-red);border-color:var(--stamp-red);}
 .loading{text-align:center;padding:60px 10px;color:var(--ink-soft);}
+.overlay{position:fixed;inset:0;background:rgba(22,26,46,.55);display:flex;align-items:center;justify-content:center;z-index:999;padding:16px;}
+.overlay .modal{background:#fff;border-radius:16px;padding:24px 20px;max-width:320px;width:100%;position:relative;box-shadow:0 20px 50px rgba(0,0,0,.25);}
+.overlay .modal-close{position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;line-height:1;color:var(--ink-soft);}
 </style>
 </head>
 <body>
@@ -108,7 +110,7 @@ function getUser(){
 function setUser(u){ localStorage.setItem('JS_user', JSON.stringify(u)); }
 function logout(){ localStorage.removeItem('JS_token'); localStorage.removeItem('JS_user'); appState.page='dashboard'; render(); }
 
-let appState = { page:'dashboard', jobFilter:'All', authMode:'login', authRole:'candidate', authError:'' };
+let appState = { page:'dashboard', jobFilter:'All', authMode:'login', authRole:'candidate', authError:'', upiModalOpen:false, upiModalAmount:99, upiModalRole:'candidate', upiModalJobId:null };
 
 function statusLabel(s){ return {applied:'अर्ज केला', interview:'इंटरव्ह्यू', selected:'निवड झाली', rejected:'नाकारले', pending:'प्रलंबित', approved:'मंजूर', blocked:'ब्लॉक'}[s]||s; }
 
@@ -196,6 +198,25 @@ async function renderApp(user){
     <button class="tabbtn ${page==='applications'?'active':''}" data-page="applications">📄<br>Apply</button>
     <button class="tabbtn ${page==='notifications'?'active':''}" data-page="notifications">🔔<br>Notify</button>
     <button class="tabbtn ${page==='profile'?'active':''}" data-page="profile">👤<br>Profile</button>
+  </div>${upiModal()}`;
+}
+function upiModal(){
+  if(!appState.upiModalOpen) return '';
+  const upiId = 'Jobsetu2026@ybl';
+  const amount = appState.upiModalAmount || 99;
+  const upiLink = `upi://pay?pa=${upiId}&pn=JobSetu&am=${amount}&cu=INR`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
+  return `
+  <div class="overlay" id="upiOverlay">
+    <div class="modal" style="text-align:center;">
+      <button class="modal-close" id="upiCloseBtn">×</button>
+      <h3 style="margin-top:0;">₹${amount} सदस्यत्व शुल्क</h3>
+      <p class="subtle">खालील UPI ID वर पैसे पाठवा, किंवा QR कोड स्कॅन करा.</p>
+      <img src="${qrUrl}" alt="UPI QR" style="width:200px;height:200px;margin:10px 0;border:1px solid var(--line);border-radius:10px;">
+      <div class="card mono" style="margin:10px 0;font-weight:800;font-size:15px;">${upiId}</div>
+      <p class="subtle" style="font-size:11.5px;">पैसे पाठवल्यावर खाली बटण दाबा — Admin पडताळून सदस्यत्व सक्रिय करेल.</p>
+      <button class="btn btn-primary" id="upiPaidBtn" style="width:100%;margin-top:8px;">मी ₹${amount} पाठवले</button>
+    </div>
   </div>`;
 }
 async function unreadCount(){
@@ -312,7 +333,7 @@ async function companyProfile(){
   <div class="divider"></div>
   <div style="display:flex;justify-content:space-between;align-items:center;">
     <span class="subtle">सदस्यत्व: ${p.membership_active?'सक्रिय (संपेल: '+p.membership_expiry+')':'निष्क्रिय'}</span>
-    ${!p.membership_active?`<button class="btn btn-primary" id="">₹200 भरा</button>`:''}
+    ${!p.membership_active?`<button class="btn btn-primary" id="payBtn">₹200 भरा</button>`:''}
   </div>`;
 }
 
@@ -390,8 +411,22 @@ function attachHandlers(user){
   document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{ appState.jobFilter=b.dataset.filter; render(); });
 
   document.querySelectorAll('[data-apply]').forEach(b=>b.onclick=async()=>{
-    try{ await api('/applications', {method:'POST', body: JSON.stringify({job_id: Number(b.dataset.apply)})}); alert('अर्ज यशस्वीरित्या पाठवला!'); render(); }
-    catch(e){ alert(e.message); }
+    const jobId = Number(b.dataset.apply);
+    try{
+      await api('/applications', {method:'POST', body: JSON.stringify({job_id: jobId})});
+      alert('अर्ज यशस्वीरित्या पाठवला!');
+      render();
+    }catch(e){
+      if(e.message.includes('सदस्यत्व')){
+        appState.upiModalOpen = true;
+        appState.upiModalAmount = 99;
+        appState.upiModalRole = 'candidate';
+        appState.upiModalJobId = jobId;
+        render();
+      } else {
+        alert(e.message);
+      }
+    }
   });
   document.querySelectorAll('[data-deletejob]').forEach(b=>b.onclick=async()=>{
     if(!confirm('ही व्हॅकन्सी डिलीट करायची आहे का?')) return;
@@ -442,42 +477,30 @@ function attachHandlers(user){
     try{ await api('/profile/candidate/me/resume', {method:'POST', body: fd}); alert('Resume अपलोड झाला.'); render(); }catch(e){ alert(e.message); }
   };
   const payBtn = document.getElementById('payBtn');
-  if(payBtn) payBtn.onclick = async function(){
-    try{
-      const order = await api('/payments/create-order', {method:'POST'});
-      const options = {
-        key: order.key_id,
-        amount: order.amount*100,
-        currency: 'INR',
-        name: 'JobSetu',
-        description: 'सदस्यत्व शुल्क',
-        order_id: order.order_id,
-        handler: async function(response){
-          try{
-            const verify = await api('/payments/verify', {method:'POST', body: JSON.stringify({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature
-            })});
-            alert('पेमेंट यशस्वी! ₹' + verify.amount + ' — सदस्यत्व ' + verify.expiry + ' पर्यंत सक्रिय.');
-            if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(()=>{});
-}
-            render();
-          }catch(e){
-            alert('पेमेंट पडताळणी अयशस्वी: ' + e.message);
-          }
-        },
-        theme: { color: '#E8A63B' }
-      };
-      const rzp = new Razorpay(options);
-      rzp.open();
-    }catch(e){
-      alert(e.message);
-    }
+  if(payBtn) payBtn.onclick = ()=>{
+    const isCompany = user.role === 'company';
+    appState.upiModalOpen = true;
+    appState.upiModalAmount = isCompany ? 200 : 99;
+    appState.upiModalRole = isCompany ? 'company' : 'candidate';
+    render();
   };
+  const upiPaidBtn = document.getElementById('upiPaidBtn');
+  if(upiPaidBtn) upiPaidBtn.onclick = async()=>{
+    try{
+      const endpoint = appState.upiModalRole === 'company' ? '/payments/notify-manual' : '/applications/notify-payment';
+      await api(endpoint, {method:'POST'});
+      alert('धन्यवाद! तुमचं पेमेंट Admin कडे पडताळणीसाठी पाठवलं आहे. साधारण काही तासांत सदस्यत्व सक्रिय होईल.');
+      appState.upiModalOpen = false;
+      render();
+    }catch(e){ alert(e.message); }
+  };
+  const upiCloseBtn = document.getElementById('upiCloseBtn');
+  if(upiCloseBtn) upiCloseBtn.onclick = ()=>{ appState.upiModalOpen = false; render(); };
 }
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(()=>{});
+}
 render();
 </script>
 </body>
