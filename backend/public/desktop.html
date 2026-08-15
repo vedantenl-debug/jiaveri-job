@@ -3,14 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JobSetu — Mobile App</title>
+<title>JobSetu — Desktop Software</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="manifest" href="/manifest.json">
-<link rel="apple-touch-icon" href="/icons-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#161A2E">
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <style>
 :root{--ink:#161A2E;--ink-soft:#3A3F5C;--paper:#EFEAE0;--card:#FFFFFF;--marigold:#E8A63B;--marigold-dark:#C6841E;--stamp-green:#2F6E4F;--stamp-red:#B23A2E;--line:#DCD5C4;--radius:14px;}
 *{box-sizing:border-box;}
@@ -21,80 +16,150 @@ button{font-family:inherit;cursor:pointer;}
 #topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:var(--ink);color:#fff;}
 .brand{display:flex;align-items:center;gap:10px;font-family:'Archivo Black';font-size:18px;}
 .stamp-mini{width:26px;height:26px;border-radius:50%;background:var(--marigold);color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;transform:rotate(-8deg);}
-#mobileOuter{min-height:calc(100vh - 56px);display:flex;align-items:flex-start;justify-content:center;padding:30px 10px;background:radial-gradient(circle at 20% 10%, #E3DCC8 0%, transparent 60%), var(--paper);}
-#phone{width:390px;max-width:100%;background:#0B0D17;border-radius:40px;padding:12px;box-shadow:0 30px 60px rgba(0,0,0,0.25);}
-#phoneScreen{background:var(--paper);border-radius:30px;overflow:hidden;min-height:760px;display:flex;flex-direction:column;position:relative;}
-#phoneContent{flex:1;overflow-y:auto;padding:18px 16px 90px;}
-#phoneTabbar{background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:10px 6px 14px;}
-.tabbtn{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:#9A957E;background:none;border:none;}
-.tabbtn.active{color:var(--marigold-dark);}
-.mobile-topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 6px;}
+#deskShell{display:flex;min-height:calc(100vh - 56px);}
+#deskSidebar{width:250px;flex-shrink:0;background:#0F1225;color:#DADDF0;display:flex;flex-direction:column;padding:22px 16px;gap:18px;}
+.sidebar-role{background:#1C2140;border-radius:10px;padding:12px;font-size:13px;}
+.sidebar-role .rname{font-weight:800;color:#fff;margin-bottom:2px;}
+.sidebar-role .rtype{font-size:11px;color:#9AA0C8;text-transform:uppercase;letter-spacing:.04em;}
+.sidebar-nav{display:flex;flex-direction:column;gap:4px;}
+.sidebar-nav button{text-align:left;background:none;border:none;color:#B9BEDC;padding:9px 10px;border-radius:8px;font-size:13.5px;font-weight:600;}
+.sidebar-nav button.active,.sidebar-nav button:hover{background:#1C2140;color:#fff;}
+#deskMain{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--paper);}
+#deskTopbar{display:flex;align-items:center;justify-content:space-between;padding:16px 30px;border-bottom:1px solid var(--line);background:#fff;}
+#deskContent{flex:1;padding:26px 30px;max-width:1180px;width:100%;}
+#deskGuest{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding:60px 20px;}
 .avatar{width:34px;height:34px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;}
-.btn{padding:11px 18px;border-radius:10px;border:none;font-weight:700;font-size:13.5px;}
+.btn{padding:10px 18px;border-radius:10px;border:none;font-weight:700;font-size:13.5px;}
 .btn-primary{background:var(--marigold);color:var(--ink);}
 .btn-outline{background:transparent;border:2px solid var(--ink);color:var(--ink);}
 .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink);}
 .btn-danger{background:var(--stamp-red);color:#fff;}
 .btn-green{background:var(--stamp-green);color:#fff;}
-.btn:disabled{opacity:0.45;}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
-.ticket{background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--line);margin-bottom:12px;position:relative;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;}
+.ticket{background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--line);}
+.grid{display:grid;gap:16px;}.grid.cols-2{grid-template-columns:repeat(2,1fr);}.grid.cols-3{grid-template-columns:repeat(3,1fr);}
+@media(max-width:900px){.grid.cols-2,.grid.cols-3{grid-template-columns:1fr;}}
 .tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:#F0EAD6;color:var(--marigold-dark);margin-right:6px;}
 .tag.blue{background:#E3E7F7;color:#3B4A9E;}
-.job-title{font-size:15.5px;font-weight:800;margin:8px 0 2px;}
+.job-title{font-size:16px;font-weight:800;margin:8px 0 2px;}
 .job-meta{font-size:12.5px;color:var(--ink-soft);margin-bottom:8px;}
 .job-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
 .badge-status{font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;}
 .badge-applied{background:#E3E7F7;color:#3B4A9E;}.badge-interview{background:#FCEBC7;color:#8A5A00;}
 .badge-selected{background:#DCF3E4;color:var(--stamp-green);}.badge-rejected{background:#F7DEDB;color:var(--stamp-red);}
 .badge-pending{background:#EFEAE0;color:var(--ink-soft);}.badge-approved{background:#DCF3E4;color:var(--stamp-green);}.badge-blocked{background:#F7DEDB;color:var(--stamp-red);}
-.lock-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-soft);background:#F5F1E7;border:1px dashed var(--line);border-radius:8px;padding:8px 10px;margin-top:8px;}
-.unlock-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--stamp-green);background:#EAF6EE;border:1px solid #CFE9D8;border-radius:8px;padding:8px 10px;margin-top:8px;font-weight:600;}
+.lock-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-soft);background:#F5F1E7;border:1px dashed var(--line);border-radius:8px;padding:8px 10px;margin-top:8px;}
+.unlock-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--stamp-green);background:#EAF6EE;border:1px solid #CFE9D8;border-radius:8px;padding:8px 10px;margin-top:8px;font-weight:600;}
 .field{margin-bottom:12px;}
 .field label{display:block;font-size:12.5px;font-weight:700;margin-bottom:5px;color:var(--ink-soft);}
 .field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:14px;background:#fff;}
 .field textarea{resize:vertical;min-height:70px;}
-.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;overflow-x:auto;}
-.pill{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:12px;font-weight:600;white-space:nowrap;}
+.table{width:100%;border-collapse:collapse;font-size:13.5px;}
+.table th{text-align:left;padding:9px 8px;color:var(--ink-soft);font-size:11.5px;text-transform:uppercase;border-bottom:2px solid var(--line);}
+.table td{padding:10px 8px;border-bottom:1px solid var(--line);}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.pill{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:12.5px;font-weight:600;}
 .pill.active{background:var(--ink);color:#fff;border-color:var(--ink);}
 .empty{text-align:center;padding:40px 10px;color:var(--ink-soft);font-size:13.5px;}
-.subtle{color:var(--ink-soft);font-size:12.5px;}
-.divider{height:1px;background:var(--line);margin:14px 0;}
+.subtle{color:var(--ink-soft);font-size:13px;}
+.divider{height:1px;background:var(--line);margin:16px 0;}
 .notif-item{padding:10px 0;border-bottom:1px solid var(--line);font-size:13px;}
 .notif-item b{display:block;font-size:13px;margin-bottom:2px;}
 .notif-dot{width:7px;height:7px;border-radius:50%;background:var(--marigold-dark);display:inline-block;margin-right:6px;}
-.bellwrap{position:relative;}
-.bellcount{position:absolute;top:-6px;right:-6px;background:var(--stamp-red);color:#fff;font-size:10px;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;}
-.role-pick{display:flex;gap:8px;margin-bottom:14px;}
-.role-pick button{flex:1;padding:10px;border-radius:8px;border:1.5px solid var(--line);background:#fff;font-weight:700;font-size:12px;}
+.role-pick{display:flex;gap:8px;margin-bottom:16px;}
+.role-pick button{flex:1;padding:10px;border-radius:8px;border:1.5px solid var(--line);background:#fff;font-weight:700;font-size:12.5px;}
 .role-pick button.active{border-color:var(--marigold-dark);background:#FCF3DF;color:var(--marigold-dark);}
 .err-box{background:#F7DEDB;color:var(--stamp-red);padding:9px 12px;border-radius:8px;font-size:12.5px;margin-bottom:10px;}
-.stamp{display:inline-flex;align-items:center;gap:5px;font-family:'Archivo Black';font-size:10px;color:var(--stamp-green);border:2px solid var(--stamp-green);border-radius:6px;padding:3px 7px;transform:rotate(-3deg);}
+.stamp{display:inline-flex;align-items:center;gap:5px;font-family:'Archivo Black';font-size:10.5px;color:var(--stamp-green);border:2px solid var(--stamp-green);border-radius:6px;padding:3px 7px;transform:rotate(-3deg);}
 .stamp.red{color:var(--stamp-red);border-color:var(--stamp-red);}
+.modal-form{max-width:420px;}
 .loading{text-align:center;padding:60px 10px;color:var(--ink-soft);}
+    .hero{
+display:flex !important;
+justify-content:space-between !important;
+align-items:center !important;
+padding:80px !important;
+border-radius:20px;
+}
+
+.hero-left{
+width:60%;
+}
+
+.hero-right{
+width:35%;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.hero-right img{
+max-width:350px;
+width:100%;
+}
+
+.modal-form{
+max-width:500px !important;
+margin:40px auto !important;
+padding:30px !important;
+border-radius:20px !important;
+box-shadow:0 10px 30px rgba(0,0,0,.15);
+}
+
+.card{
+
+border-radius:18px !important;
+
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+}
+
+.card h2{
+
+color:#1565c0;
+
+margin-bottom:15px;
+
+}
+
+.card h1{
+
+font-size:42px;
+
+color:#ff9800;
+
+margin-bottom:10px;
+
+}
+
+footer{
+
+background:#0d47a1;
+
+color:white;
+
+padding:40px;
+
+text-align:center;
+
+margin-top:60px;
+
+}
 .overlay{position:fixed;inset:0;background:rgba(22,26,46,.55);display:flex;align-items:center;justify-content:center;z-index:999;padding:16px;}
-.overlay .modal{background:#fff;border-radius:16px;padding:24px 20px;max-width:320px;width:100%;position:relative;box-shadow:0 20px 50px rgba(0,0,0,.25);}
-.overlay .modal-close{position:absolute;top:8px;right:12px;background:none;border:none;font-size:22px;line-height:1;color:var(--ink-soft);}
+.overlay .modal{background:#fff;border-radius:16px;padding:26px;max-width:340px;width:100%;position:relative;box-shadow:0 20px 50px rgba(0,0,0,.25);}
+.overlay .modal-close{position:absolute;top:10px;right:14px;background:none;border:none;font-size:22px;line-height:1;color:var(--ink-soft);}
 </style>
 </head>
 <body>
-<div id="topbar">
-  <div class="brand"><span class="stamp-mini">JS</span> JobSetu </div>
-  <div id="sessionChip"></div>
-</div>
-<div id="mobileOuter">
-  <div id="phone"><div id="phoneScreen"></div></div>
-</div>
+<div id="topbar"><div class="brand"><span class="stamp-mini">JS</span> JobSetu</div><div id="sessionChip"></div></div>
+<div id="app"></div>
 
 <script>
 const CATEGORIES = ["Computer / IT","Mechanical","Electrical","Civil","Electronics","Production","Automobile","Sales","HR","Accounts","Office Staff","Driver","Helper","Security","Hotel","Healthcare","इतर"];
 
-/* ---------- API helper ---------- */
 async function api(path, opts={}){
   opts.headers = opts.headers || {};
-  if(!(opts.body instanceof FormData)){
-    opts.headers['Content-Type'] = 'application/json';
-  }
+  if(!(opts.body instanceof FormData)) opts.headers['Content-Type'] = 'application/json';
   const token = localStorage.getItem('JS_token');
   if(token) opts.headers['Authorization'] = 'Bearer ' + token;
   const res = await fetch('/api' + path, opts);
@@ -103,16 +168,13 @@ async function api(path, opts={}){
   if(!res.ok) throw new Error(data.error || 'काहीतरी चुकले.');
   return data;
 }
-function getUser(){
-  const raw = localStorage.getItem('JS_user');
-  return raw ? JSON.parse(raw) : null;
-}
+function getUser(){ const raw = localStorage.getItem('JS_user'); return raw ? JSON.parse(raw) : null; }
 function setUser(u){ localStorage.setItem('JS_user', JSON.stringify(u)); }
 function logout(){ localStorage.removeItem('JS_token'); localStorage.removeItem('JS_user'); appState.page='dashboard'; render(); }
-
-let appState = { page:'dashboard', jobFilter:'All', authMode:'login', authRole:'candidate', authError:'', upiModalOpen:false, upiModalAmount:99, upiModalRole:'candidate', upiModalJobId:null };
-
 function statusLabel(s){ return {applied:'अर्ज केला', interview:'इंटरव्ह्यू', selected:'निवड झाली', rejected:'नाकारले', pending:'प्रलंबित', approved:'मंजूर', blocked:'ब्लॉक'}[s]||s; }
+
+let appState = { page:'dashboard', jobFilter:'All', authMode:'login', authRole:'candidate', authError:'',
+  seekerTab:'search', companyTab:'vacancies', adminTab:'companies', upiModalOpen:false, upiModalJobId:null };
 
 /* ============ ROOT RENDER ============ */
 async function render(){
@@ -121,83 +183,60 @@ async function render(){
   if(user){
     chip.innerHTML = `<span style="font-size:13px;color:#DADDF0;">${user.role==='admin'?'👤 Admin':user.role==='company'?'🏢 '+user.name:'👤 '+user.name}</span> <button id="topLogoutBtn" style="background:none;border:1px solid #454A6B;color:#DADDF0;border-radius:8px;padding:5px 10px;font-size:12px;margin-left:8px;">Logout</button>`;
     document.getElementById('topLogoutBtn').onclick = logout;
-  } else {
-    chip.innerHTML = '';
-  }
-  const screen = document.getElementById('phoneScreen');
-  screen.innerHTML = `<div class="loading">लोड होत आहे...</div>`;
-  try{
-    screen.innerHTML = user ? await renderApp(user) : renderAuth();
-  }catch(e){
-    screen.innerHTML = `<div class="loading">एरर: ${e.message}<br><button class="btn btn-ghost" onclick="render()" style="margin-top:10px;">पुन्हा प्रयत्न करा</button></div>`;
-  }
+  } else chip.innerHTML = '';
+
+  const app = document.getElementById('app');
+  app.innerHTML = `<div class="loading">लोड होत आहे...</div>`;
+  try{ app.innerHTML = user ? await renderShell(user) : renderGuest(); }
+  catch(e){ app.innerHTML = `<div class="loading">एरर: ${e.message}<br><button class="btn btn-ghost" onclick="render()" style="margin-top:10px;">पुन्हा प्रयत्न करा</button></div>`; }
   attachHandlers(user);
 }
 
-/* ============ AUTH (login/register) ============ */
-function renderAuth(){
+function renderGuest(){
   const f = appState;
   const showRegister = f.authRole !== 'admin';
   return `
-  <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:50px 20px 20px;">
-    <div class="stamp-mini" style="width:52px;height:52px;font-size:20px;border-radius:16px;">JS</div>
-    <h1 class="display" style="font-size:22px;margin:6px 0;">JobSetu</h1>
-    <p class="subtle">स्थानिक नोकऱ्या, तुमच्या खिशात.</p>
-  </div>
-  <div style="padding:0 18px;">
+<div id="deskGuest">
+  <div class="card modal-form" style="width:420px;background:#fff;text-align:left;">
     <div class="role-pick">
       <button data-role="candidate" class="${f.authRole==='candidate'?'active':''}">Job Seeker</button>
       <button data-role="company" class="${f.authRole==='company'?'active':''}">Company</button>
       <button data-role="admin" class="${f.authRole==='admin'?'active':''}">Admin</button>
     </div>
     ${f.authError ? `<div class="err-box">${f.authError}</div>` : ''}
-    ${f.authMode==='register' ? `<div class="field"><label>${f.authRole==='company'?'कंपनीचे नाव':'नाव'}</label><input id="nameInput" placeholder="नाव टाका"></div>` : ''}
-    <div class="field"><label>मोबाईल नंबर</label><input id="phoneInput" placeholder="10 अंकी मोबाईल नंबर"></div>
-    <div class="field"><label>पासवर्ड</label><input id="passwordInput" type="password" placeholder="पासवर्ड टाका"></div>
-    <button class="btn btn-primary" id="authSubmitBtn" style="width:100%;">${f.authMode==='register'?'नोंदणी करा':'Login करा'}</button>
-    ${showRegister ? `<p class="subtle" style="text-align:center;margin-top:12px;">${f.authMode==='register'?'आधीच खाते आहे?':'खाते नाही?'} <a id="toggleAuth" style="color:var(--marigold-dark);font-weight:700;cursor:pointer;">${f.authMode==='register'?'Login करा':'नोंदणी करा'}</a></p>` : ''}
-  </div>`;
+    ${f.authMode==='register' ? `<div class="field"><label>${f.authRole==='company'?'Company Name':'Full Name'}</label><input id="nameInput"></div>` : ''}
+    <div class="field"><label>Mobile Number</label><input id="phoneInput"></div>
+    <div class="field"><label>Password</label><input id="passwordInput" type="password"></div>
+    <button class="btn btn-primary" id="authSubmitBtn" style="width:100%;">${f.authMode==='register'?'Register':'Login'}</button>
+    ${showRegister ? `<p style="text-align:center;margin-top:15px;">${f.authMode==='register'?'Already have an account?':'New User?'} <a id="toggleAuth" style="cursor:pointer;color:#1565c0;font-weight:bold;">${f.authMode==='register'?'Login':'Register'}</a></p>` : ''}
+  </div>
+</div>
+`;
 }
 
-/* ============ LOGGED-IN APP ============ */
-async function renderApp(user){
+async function renderShell(user){
   const page = appState.page;
+  const notifRows = await api('/notifications').catch(()=>[]);
+  const unread = notifRows.filter(n=>n.unread).length;
   let content = '';
-  if(user.role==='candidate'){
-    if(page==='dashboard') content = await candidateDashboard();
-    else if(page==='search') content = await candidateSearch();
-    else if(page==='applications') content = await candidateApplications();
-    else if(page==='notifications') content = await notificationsView();
-    else if(page==='profile') content = await candidateProfile();
-  } else if(user.role==='company'){
-    if(page==='dashboard') content = await companyDashboard();
-    else if(page==='search') content = await companyVacancies();
-    else if(page==='applications') content = await companyApplicationsAll();
-    else if(page==='notifications') content = await notificationsView();
-    else if(page==='profile') content = await companyProfile();
-  } else if(user.role==='admin'){
-    if(page==='dashboard') content = await adminDashboard();
-    else if(page==='search') content = await adminJobs();
-    else if(page==='applications') content = await adminCompanies();
-    else if(page==='notifications') content = await notificationsView();
-    else if(page==='profile') content = await adminPayments();
-  }
-  const unread = await unreadCount();
+  if(page==='notifications') content = renderNotifications(notifRows);
+  else if(user.role==='candidate') content = await renderCandidate();
+  else if(user.role==='company') content = await renderCompany();
+  else if(user.role==='admin') content = await renderAdmin();
+
   return `
-  <div class="mobile-topbar">
-    <div><div style="font-size:11px;color:var(--ink-soft);">नमस्कार 👋</div><div style="font-weight:800;font-size:15px;">${user.name}</div></div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div class="bellwrap" data-page="notifications">🔔${unread>0?`<span class="bellcount">${unread}</span>`:''}</div>
-      <div class="avatar">${user.name.slice(0,1)}</div>
+  <div id="deskShell">
+    <div id="deskSidebar">
+      <div class="sidebar-role"><div class="rname">${user.name}</div><div class="rtype">${user.role==='admin'?'Administrator':user.role==='company'?'Company':'Job Seeker'}</div></div>
+      <div class="sidebar-nav">
+        <button class="${page==='dashboard'?'active':''}" data-page="dashboard">🏠 Dashboard</button>
+        <button class="${page==='notifications'?'active':''}" data-page="notifications">🔔 सूचना ${unread>0?'('+unread+')':''}</button>
+      </div>
     </div>
-  </div>
-  <div id="phoneContent">${content}</div>
-  <div id="phoneTabbar">
-    <button class="tabbtn ${page==='dashboard'?'active':''}" data-page="dashboard">🏠<br>Home</button>
-    <button class="tabbtn ${page==='search'?'active':''}" data-page="search">🔎<br>Search</button>
-    <button class="tabbtn ${page==='applications'?'active':''}" data-page="applications">📄<br>Apply</button>
-    <button class="tabbtn ${page==='notifications'?'active':''}" data-page="notifications">🔔<br>Notify</button>
-    <button class="tabbtn ${page==='profile'?'active':''}" data-page="profile">👤<br>Profile</button>
+    <div id="deskMain">
+      <div id="deskTopbar"><h2 style="margin:0;font-size:17px;">${page==='notifications'?'सूचना':'Dashboard'}</h2><div class="avatar">${user.name.slice(0,1)}</div></div>
+      <div id="deskContent">${content}</div>
+    </div>
   </div>${upiModal()}`;
 }
 function upiModal(){
@@ -205,193 +244,206 @@ function upiModal(){
   const upiId = 'Jobsetu2026@ybl';
   const amount = appState.upiModalAmount || 99;
   const upiLink = `upi://pay?pa=${upiId}&pn=JobSetu&am=${amount}&cu=INR`;
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiLink)}`;
   return `
   <div class="overlay" id="upiOverlay">
     <div class="modal" style="text-align:center;">
       <button class="modal-close" id="upiCloseBtn">×</button>
-      <h3 style="margin-top:0;">₹${amount} सदस्यत्व शुल्क</h3>
+      <h3>₹${amount} सदस्यत्व शुल्क</h3>
       <p class="subtle">खालील UPI ID वर पैसे पाठवा, किंवा QR कोड स्कॅन करा.</p>
-      <img src="${qrUrl}" alt="UPI QR" style="width:200px;height:200px;margin:10px 0;border:1px solid var(--line);border-radius:10px;">
-      <div class="card mono" style="margin:10px 0;font-weight:800;font-size:15px;">${upiId}</div>
-      <p class="subtle" style="font-size:11.5px;">पैसे पाठवल्यावर <b>पेमेंटचा स्क्रीनशॉट WhatsApp वर 9404180011 या नंबरवर पाठवा</b>. Admin पडताळून सदस्यत्व सक्रिय करेल.</p>
+      <img src="${qrUrl}" alt="UPI QR" style="width:220px;height:220px;margin:10px 0;border:1px solid var(--line);border-radius:10px;">
+      <div class="card" style="margin:10px 0;font-weight:800;font-size:16px;">${upiId}</div>
+      <p class="subtle" style="font-size:12px;">पैसे पाठवल्यावर <b>पेमेंटचा स्क्रीनशॉट WhatsApp वर 9404180011 या नंबरवर पाठवा</b>. Admin पडताळून सदस्यत्व सक्रिय करेल.</p>
       <button class="btn btn-primary" id="upiPaidBtn" style="width:100%;margin-top:8px;">मी ₹${amount} पाठवले</button>
     </div>
   </div>`;
 }
-async function unreadCount(){
-  try{ const rows = await api('/notifications'); return rows.filter(n=>n.unread).length; }catch(e){ return 0; }
+function renderNotifications(rows){
+  api('/notifications/read-all', {method:'PUT'}).catch(()=>{});
+  if(!rows.length) return `<div class="empty">कोणतीही सूचना नाही.</div>`;
+  return rows.map(n=>`<div class="notif-item">${n.unread?'<span class="notif-dot"></span>':''}<b>${n.title}</b>${n.body}</div>`).join('');
 }
 
-/* ---- CANDIDATE ---- */
-async function candidateDashboard(){
-  const [profile, apps] = await Promise.all([api('/profile/candidate/me'), api('/applications/mine')]);
-  return `
-  <div class="card"><div class="job-meta">Category: ${profile.category||'—'} · अनुभव: ${profile.experience||'—'}</div>
-  <div class="subtle" style="margin-top:6px;">सदस्यत्व: ${profile.membership_active?'✅ सक्रिय (संपेल: '+profile.membership_expiry+')':'❌ निष्क्रिय'}</div></div>
-  <h3 style="font-size:15px;">माझे अलीकडील अर्ज</h3>
-  ${apps.slice(0,3).map(a=>`<div class="ticket"><div class="job-title">${a.job_title}</div><div class="job-meta">${a.company_name}</div><span class="badge-status badge-${a.status}">${statusLabel(a.status)}</span></div>`).join('')||'<div class="empty">अजून अर्ज नाही.</div>'}
-  `;
+/* ============ CANDIDATE (Job Seeker) ============ */
+async function renderCandidate(){
+  const tabs = [['search','Job Search'],['applications','माझे अर्ज'],['profile','Profile']];
+  let body = '';
+  if(appState.seekerTab==='search') body = await candidateSearch();
+  else if(appState.seekerTab==='applications') body = await candidateApplications();
+  else body = await candidateProfile();
+  return `<div class="pill-row">${tabs.map(t=>`<span class="pill ${appState.seekerTab===t[0]?'active':''}" data-seekertab="${t[0]}">${t[1]}</span>`).join('')}</div>${body}`;
 }
 async function candidateSearch(){
   const jobs = await api('/jobs' + (appState.jobFilter!=='All' ? '?category='+encodeURIComponent(appState.jobFilter) : ''));
   const myApps = await api('/applications/mine');
   const appliedJobIds = new Set(myApps.map(a=>a.job_id));
-  return `
-  <div class="pill-row"><span class="pill ${appState.jobFilter==='All'?'active':''}" data-filter="All">सर्व</span>${CATEGORIES.map(c=>`<span class="pill ${appState.jobFilter===c?'active':''}" data-filter="${c}">${c}</span>`).join('')}</div>
-  ${jobs.map(j=>`<div class="ticket"><span class="tag">${j.category}</span><span class="tag blue">${j.location}</span>
+  return `<div class="pill-row"><span class="pill ${appState.jobFilter==='All'?'active':''}" data-filter="All">सर्व</span>${CATEGORIES.map(c=>`<span class="pill ${appState.jobFilter===c?'active':''}" data-filter="${c}">${c}</span>`).join('')}</div>
+  <div class="grid cols-2">${jobs.map(j=>`<div class="ticket">
+    <span class="tag">${j.category}</span><span class="tag blue">${j.location}</span>
     <div class="job-title">${j.title}</div><div class="job-meta">${j.company_name} · ${j.salary}</div>
-    <div style="font-size:12.5px;color:var(--ink-soft);">${j.description}</div>
-    <div class="job-actions">${appliedJobIds.has(j.id) ? `<span class="badge-status badge-applied">अर्ज केला</span>` : `<button class="btn btn-primary" data-apply="${j.id}">Apply करा</button>`}</div>
-  </div>`).join('') || '<div class="empty">या Category मध्ये सध्या व्हॅकन्सी नाही.</div>'}`;
+    <div class="subtle">${j.description}</div>
+    <div class="job-actions">${appliedJobIds.has(j.id)?`<span class="badge-status badge-applied">अर्ज केला</span>`:`<button class="btn btn-primary" data-apply="${j.id}">Apply करा</button>`}</div>
+  </div>`).join('') || '<div class="empty">या Category मध्ये सध्या व्हॅकन्सी नाही.</div>'}</div>`;
 }
 async function candidateApplications(){
   const apps = await api('/applications/mine');
   if(!apps.length) return `<div class="empty">तुम्ही अजून कोणत्याही जॉबसाठी अर्ज केलेला नाही.</div>`;
-  return apps.map(a=>`<div class="card"><div class="job-title">${a.job_title}</div><div class="job-meta">${a.company_name} · ${a.applied_at.slice(0,10)}</div>
-    <span class="badge-status badge-${a.status}">${statusLabel(a.status)}</span>${a.interview_date?`<div class="subtle" style="margin-top:6px;">इंटरव्ह्यू: ${a.interview_date}</div>`:''}</div>`).join('');
+  return `<table class="table"><thead><tr><th>जॉब</th><th>कंपनी</th><th>तारीख</th><th>स्थिती</th><th>इंटरव्ह्यू</th></tr></thead><tbody>
+  ${apps.map(a=>`<tr><td>${a.job_title}</td><td>${a.company_name}</td><td>${a.applied_at.slice(0,10)}</td><td><span class="badge-status badge-${a.status}">${statusLabel(a.status)}</span></td><td>${a.interview_date||'—'}</td></tr>`).join('')}
+  </tbody></table>`;
 }
 async function candidateProfile(){
   const p = await api('/profile/candidate/me');
-  return `
-  <div class="field"><label>नाव</label><input id="pName" value="${p.name}"></div>
-  <div class="field"><label>Category</label><select id="pCategory">${CATEGORIES.map(c=>`<option ${c===p.category?'selected':''}>${c}</option>`).join('')}</select></div>
-  <div class="field"><label>अनुभव</label><input id="pExp" value="${p.experience||''}" placeholder="उदा. 2 वर्षे"></div>
-  <div class="field"><label>मोबाईल नंबर</label><input value="${p.phone}" disabled></div>
-  <button class="btn btn-primary" id="saveProfileBtn">जतन करा</button>
-  <div class="divider"></div>
-  <div class="field"><label>Resume</label>
-    <div class="subtle mono" style="margin-bottom:6px;">${p.resume_path || 'अजून अपलोड केलेला नाही'}</div>
-    <input type="file" id="resumeFile" accept=".pdf,.doc,.docx">
-    <button class="btn btn-ghost" id="uploadResumeBtn" style="margin-top:8px;">Resume अपलोड करा</button>
-  </div>
-  <div class="divider"></div>
-  <div style="display:flex;justify-content:space-between;align-items:center;">
-    <span class="subtle">सदस्यत्व: ${p.membership_active?'सक्रिय (संपेल: '+p.membership_expiry+')':'निष्क्रिय'}</span>
-    ${!p.membership_active?`<button class="btn btn-primary" id="payBtn">₹99 भरा</button>`:''}
-  </div>`;
+  return `<div class="card" style="max-width:500px;">
+    <div class="field"><label>नाव</label><input id="pName" value="${p.name}"></div>
+    <div class="field"><label>Category</label><select id="pCategory">${CATEGORIES.map(c=>`<option ${c===p.category?'selected':''}>${c}</option>`).join('')}</select></div>
+    <div class="field"><label>अनुभव</label><input id="pExp" value="${p.experience||''}"></div>
+    <div class="field"><label>मोबाईल नंबर</label><input value="${p.phone}" disabled></div>
+    <button class="btn btn-primary" id="saveProfileBtn">जतन करा</button>
+    <div class="divider"></div>
+    <div class="field"><label>Resume</label>
+      <div class="subtle mono" style="margin-bottom:6px;">${p.resume_path||'अजून अपलोड केलेला नाही'}</div>
+      <input type="file" id="resumeFile" accept=".pdf,.doc,.docx">
+      <button class="btn btn-ghost" id="uploadResumeBtn" style="margin-top:8px;">Resume अपलोड करा</button>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span class="subtle">सदस्यत्व: ${p.membership_active?'सक्रिय (संपेल: '+p.membership_expiry+')':'निष्क्रिय'}</span>
+      ${!p.membership_active?`<button class="btn btn-primary" id="payBtn">₹99 भरा</button>`:''}
+    </div></div>`;
 }
 
-/* ---- COMPANY ---- */
-async function companyDashboard(){
-  const [profile, jobs] = await Promise.all([api('/profile/company/me'), api('/jobs/mine')]);
-  if(profile.status==='pending') return `<div class="card"><span class="stamp red">⏳ PENDING</span><p class="subtle" style="margin-top:10px;">तुमचे खाते Admin मंजुरीच्या प्रतीक्षेत आहे.</p></div>`;
-  let totalApps = 0;
-  for(const j of jobs){ try{ const a = await api('/applications/job/'+j.id); totalApps += a.length; }catch(e){} }
-  return `<div style="display:flex;gap:10px;">
-    <div class="card" style="flex:1;"><div style="font-size:22px;font-weight:800;">${jobs.length}</div><div class="subtle">व्हॅकन्सी</div></div>
-    <div class="card" style="flex:1;"><div style="font-size:22px;font-weight:800;">${totalApps}</div><div class="subtle">आलेले अर्ज</div></div>
-  </div>`;
+/* ============ COMPANY ============ */
+async function renderCompany(){
+  const profile = await api('/profile/company/me');
+  if(profile.status==='pending') return `<div class="card"><span class="stamp red">⏳ PENDING</span><p class="subtle" style="margin-top:10px;">तुमचे खाते Admin मंजुरीच्या प्रतीक्षेत आहे. मंजुरीनंतर व्हॅकन्सी पोस्ट करू शकाल.</p></div>`;
+  const tabs = [['vacancies','व्हॅकन्सी'],['applications','आलेले अर्ज'],['directory','उमेदवार डेटाबेस'],['profile','Profile']];
+  let body='';
+  if(appState.companyTab==='vacancies') body = await companyVacancies();
+  else if(appState.companyTab==='applications') body = await companyApplicationsAll();
+  else if(appState.companyTab==='directory') body = await companyDirectory();
+  else body = await companyProfile(profile);
+  return `<div class="pill-row">${tabs.map(t=>`<span class="pill ${appState.companyTab===t[0]?'active':''}" data-companytab="${t[0]}">${t[1]}</span>`).join('')}</div>${body}`;
 }
 async function companyVacancies(){
   const jobs = await api('/jobs/mine');
-  return `
-  <div class="card">
-    <h3 style="margin-top:0;font-size:15px;">नवीन व्हॅकन्सी पोस्ट करा</h3>
-    <div class="field"><label>पदाचे नाव</label><input id="newJobTitle" placeholder="उदा. Electrician"></div>
-    <div class="field"><label>Category</label><select id="newJobCat">${CATEGORIES.map(c=>`<option>${c}</option>`).join('')}</select></div>
-    <div class="field"><label>स्थान</label><input id="newJobLoc" placeholder="उदा. Kolhapur"></div>
-    <div class="field"><label>पगार श्रेणी</label><input id="newJobSalary" placeholder="उदा. ₹10,000 - ₹13,000"></div>
+  return `<div class="card" style="margin-bottom:18px;">
+    <h3 style="margin-top:0;">नवीन व्हॅकन्सी पोस्ट करा</h3>
+    <div class="grid cols-2">
+      <div class="field"><label>पदाचे नाव</label><input id="newJobTitle" placeholder="उदा. Electrician"></div>
+      <div class="field"><label>Category</label><select id="newJobCat">${CATEGORIES.map(c=>`<option>${c}</option>`).join('')}</select></div>
+      <div class="field"><label>स्थान</label><input id="newJobLoc" placeholder="उदा. Kolhapur"></div>
+      <div class="field"><label>पगार श्रेणी</label><input id="newJobSalary" placeholder="उदा. ₹10,000 - ₹13,000"></div>
+    </div>
     <div class="field"><label>वर्णन</label><textarea id="newJobDesc"></textarea></div>
-    <button class="btn btn-primary" id="postJobBtn" style="width:100%;">पोस्ट करा (Admin मंजुरीसाठी)</button>
+    <button class="btn btn-primary" id="postJobBtn">पोस्ट करा (Admin मंजुरीसाठी पाठवा)</button>
   </div>
-  ${jobs.map(j=>`<div class="ticket">
+  <div class="grid cols-2">${jobs.map(j=>`<div class="ticket">
     <span class="tag">${j.category}</span><span class="badge-status badge-${j.status}" style="float:right;">${statusLabel(j.status)}</span>
     <div class="job-title">${j.title}</div><div class="job-meta">${j.location} · ${j.salary}</div>
     <div class="job-actions"><button class="btn btn-danger" data-deletejob="${j.id}">Delete</button></div>
-  </div>`).join('') || '<div class="empty">अजून व्हॅकन्सी पोस्ट केलेली नाही.</div>'}`;
+  </div>`).join('') || '<div class="empty">अजून व्हॅकन्सी पोस्ट केलेली नाही.</div>'}</div>`;
 }
 async function companyApplicationsAll(){
   const jobs = await api('/jobs/mine');
-  let html = '';
+  let out = [];
   for(const j of jobs){
     let apps = [];
     try{ apps = await api('/applications/job/'+j.id); }catch(e){}
-    for(const a of apps){
-      html += `<div class="card">
-        <div style="display:flex;justify-content:space-between;"><div>
-          <div class="job-title">${a.name}</div><div class="job-meta">${a.category} · अनुभव: ${a.experience} — ${j.title}</div>
-        </div><span class="badge-status badge-${a.status}">${statusLabel(a.status)}</span></div>
-        <div class="unlock-row">🔓 Apply केले — नंबर: <b>${a.phone}</b>${a.resume_path?` · Resume: ${a.resume_path}`:''}</div>
-        <div class="job-actions">
-          <button class="btn btn-ghost" data-schedint="${a.application_id}">इंटरव्ह्यू तारीख</button>
-          <button class="btn btn-green" data-appstatus="${a.application_id}:selected">निवडा</button>
-          <button class="btn btn-danger" data-appstatus="${a.application_id}:rejected">नाकारा</button>
-        </div></div>`;
-    }
+    apps.forEach(a=>out.push({...a, job_title:j.title}));
   }
-  return html || `<div class="empty">अजून कोणीही अर्ज केलेला नाही.</div>`;
+  if(!out.length) return `<div class="empty">अजून कोणीही अर्ज केलेला नाही.</div>`;
+  return out.map(a=>`<div class="card" style="margin-bottom:14px;">
+    <div style="display:flex;justify-content:space-between;"><div>
+      <div class="job-title">${a.name}</div><div class="job-meta">${a.category} · अनुभव: ${a.experience} — अर्ज केला: ${a.job_title}</div>
+    </div><span class="badge-status badge-${a.status}">${statusLabel(a.status)}</span></div>
+    <div class="unlock-row">🔓 उमेदवाराने Apply केले आहे — नंबर: <b>${a.phone}</b>${a.resume_path?` · Resume: ${a.resume_path}`:''}</div>
+    <div class="job-actions">
+      <button class="btn btn-ghost" data-schedint="${a.application_id}">इंटरव्ह्यू तारीख द्या</button>
+      <button class="btn btn-green" data-appstatus="${a.application_id}:selected">निवडा</button>
+      <button class="btn btn-danger" data-appstatus="${a.application_id}:rejected">नाकारा</button>
+    </div></div>`).join('');
 }
-async function companyProfile(){
-  const p = await api('/profile/company/me');
-  return `
-  <div class="field"><label>कंपनीचे नाव</label><input id="pName" value="${p.name}"></div>
-  <div class="field"><label>Category</label><select id="pCategory">${CATEGORIES.map(c=>`<option ${c===p.category?'selected':''}>${c}</option>`).join('')}</select></div>
-  <div class="field"><label>स्थान</label><input id="pLocation" value="${p.location||''}"></div>
-  <div class="field"><label>मोबाईल नंबर</label><input value="${p.phone}" disabled></div>
-  <button class="btn btn-primary" id="saveProfileBtn">जतन करा</button>
-  <div class="divider"></div>
-  <div style="display:flex;justify-content:space-between;align-items:center;">
-    <span class="subtle">सदस्यत्व: ${p.membership_active?'सक्रिय (संपेल: '+p.membership_expiry+')':'निष्क्रिय'}</span>
-    ${!p.membership_active?`<button class="btn btn-primary" id="payBtn">₹200 भरा</button>`:''}
-  </div>`;
+async function companyDirectory(){
+  const list = await api('/applications/directory');
+  return `<p class="subtle" style="margin-bottom:14px;">येथे सर्व नोंदणीकृत उमेदवार दिसतात — पण ज्यांनी तुमच्या कोणत्याही जॉबसाठी Apply केलेले नाही, त्यांचा नंबर server-side गोपनीय ठेवला जातो.</p>
+  <div class="grid cols-2">${list.map(c=>`<div class="card">
+    <div class="job-title">${c.name}</div><div class="job-meta">${c.category} · अनुभव: ${c.experience}</div>
+    ${c.unlocked ? `<div class="unlock-row">🔓 Apply केले — नंबर: <b>${c.phone}</b>${c.resume_path?` · Resume: ${c.resume_path}`:''}</div>`
+                 : `<div class="lock-row">🔒 या उमेदवाराने अजून तुमच्या कोणत्याही जॉबसाठी Apply केलेले नाही.</div>`}
+  </div>`).join('')}</div>`;
+}
+async function companyProfile(p){
+  p = p || await api('/profile/company/me');
+  return `<div class="card" style="max-width:500px;">
+    <div class="field"><label>कंपनीचे नाव</label><input id="pName" value="${p.name}"></div>
+    <div class="field"><label>Category</label><select id="pCategory">${CATEGORIES.map(c=>`<option ${c===p.category?'selected':''}>${c}</option>`).join('')}</select></div>
+    <div class="field"><label>स्थान</label><input id="pLocation" value="${p.location||''}"></div>
+    <div class="field"><label>मोबाईल नंबर</label><input value="${p.phone}" disabled></div>
+    <button class="btn btn-primary" id="saveProfileBtn">जतन करा</button>
+    <div class="divider"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span class="subtle">सदस्यत्व: ${p.membership_active?'सक्रिय (संपेल: '+p.membership_expiry+')':'निष्क्रिय'}</span>
+      ${!p.membership_active?`<button class="btn btn-primary" id="payBtn">₹200 भरा</button>`:''}
+    </div></div>`;
 }
 
-/* ---- ADMIN ---- */
-async function adminDashboard(){
-  const [companies, jobs, candidates] = await Promise.all([api('/admin/companies'), api('/admin/jobs'), api('/admin/candidates')]);
-  const pendingCo = companies.filter(c=>c.status==='pending').length;
-  const pendingJobs = jobs.filter(j=>j.status==='pending').length;
-  return `<div style="display:flex;flex-wrap:wrap;gap:10px;">
-    <div class="card" style="flex:1;min-width:120px;"><div style="font-size:20px;font-weight:800;">${pendingCo}</div><div class="subtle">प्रलंबित कंपनी</div></div>
-    <div class="card" style="flex:1;min-width:120px;"><div style="font-size:20px;font-weight:800;">${pendingJobs}</div><div class="subtle">प्रलंबित व्हॅकन्सी</div></div>
-    <div class="card" style="flex:1;min-width:120px;"><div style="font-size:20px;font-weight:800;">${candidates.length}</div><div class="subtle">एकूण उमेदवार</div></div>
-  </div>
-  <h3 style="font-size:15px;margin-top:16px;">सर्व उमेदवार</h3>
-  ${candidates.map(c=>{
-    const resumeLine = c.resume_path ? '<a href="/uploads/'+encodeURIComponent(c.resume_path)+'" target="_blank" style="color:var(--marigold-dark);">'+c.resume_path+'</a>' : 'Resume नाही';
-    return `<div class="card">
-      <div class="job-title">${c.name}</div><div class="job-meta">${c.category} · ${c.phone}</div>
-      <div class="subtle mono" style="margin:4px 0;">${resumeLine}</div>
-      <div class="subtle">सदस्यत्व: ${c.membership_active?'✅ सक्रिय':'❌ निष्क्रिय'}</div>
-      <div class="job-actions">${!c.membership_active?`<button class="btn btn-green" data-activatecand="${c.id}">सदस्यत्व सक्रिय करा</button>`:''}<button class="btn btn-danger" data-deletecand="${c.id}">काढून टाका</button></div>
-    </div>`;
-  }).join('') || '<div class="empty">अजून कोणीही नोंदणी केलेली नाही.</div>'}`;
+/* ============ ADMIN ============ */
+async function renderAdmin(){
+  const tabs = [['companies','कंपन्या मंजुरी'],['candidates','उमेदवार'],['vacancies','व्हॅकन्सी मंजुरी'],['payments','पेमेंट रिपोर्ट'],['membership','सदस्यत्व']];
+  let body='';
+  if(appState.adminTab==='companies') body = await adminCompanies();
+  else if(appState.adminTab==='candidates') body = await adminCandidates();
+  else if(appState.adminTab==='vacancies') body = await adminJobs();
+  else if(appState.adminTab==='payments') body = await adminPayments();
+  else body = await adminMembership();
+  return `<div class="pill-row">${tabs.map(t=>`<span class="pill ${appState.adminTab===t[0]?'active':''}" data-admintab="${t[0]}">${t[1]}</span>`).join('')}</div>${body}`;
 }
 async function adminCompanies(){
   const companies = await api('/admin/companies');
-  return companies.map(c=>`<div class="card">
-    <div class="job-title">${c.name}</div><div class="job-meta">${c.category} · ${c.location}</div>
-    <span class="badge-status badge-${c.status}">${statusLabel(c.status)}</span>
-    <div class="subtle">सदस्यत्व: ${c.membership_active?'✅ सक्रिय':'❌ निष्क्रिय'}</div>
-    <div class="job-actions">
-      ${c.status!=='approved'?`<button class="btn btn-green" data-costatus="${c.id}:approved">मंजूर करा</button>`:''}
-      ${c.status!=='blocked'?`<button class="btn btn-danger" data-costatus="${c.id}:blocked">ब्लॉक करा</button>`:`<button class="btn btn-ghost" data-costatus="${c.id}:approved">अनब्लॉक</button>`}
-      ${!c.membership_active?`<button class="btn btn-green" data-activateco="${c.id}">सदस्यत्व सक्रिय करा</button>`:''}
-      <button class="btn btn-danger" data-deleteco="${c.id}">काढून टाका</button>
-    </div></div>`).join('');
+  return `<table class="table"><thead><tr><th>कंपनी</th><th>Category</th><th>स्थान</th><th>स्थिती</th><th>सदस्यत्व</th><th></th></tr></thead><tbody>
+  ${companies.map(c=>`<tr><td>${c.name}</td><td>${c.category}</td><td>${c.location}</td>
+    <td><span class="badge-status badge-${c.status}">${statusLabel(c.status)}</span></td>
+    <td>${c.membership_active?'✅ सक्रिय':'❌ निष्क्रिय'}</td>
+    <td>${c.status!=='approved'?`<button class="btn btn-green" data-costatus="${c.id}:approved">मंजूर करा</button>`:''}
+        ${c.status!=='blocked'?`<button class="btn btn-danger" data-costatus="${c.id}:blocked">ब्लॉक करा</button>`:`<button class="btn btn-ghost" data-costatus="${c.id}:approved">अनब्लॉक</button>`}
+        ${!c.membership_active?`<button class="btn btn-green" data-activateco="${c.id}">सदस्यत्व सक्रिय करा</button>`:''}
+        <button class="btn btn-danger" data-deleteco="${c.id}">काढून टाका</button></td>
+  </tr>`).join('')}</tbody></table>`;
+}
+async function adminCandidates(){
+  const candidates = await api('/admin/candidates');
+  return `<p class="subtle" style="margin-bottom:10px;">Admin ला नेहमी सर्व उमेदवारांचा पूर्ण डेटा दिसतो.</p>
+  <table class="table"><thead><tr><th>नाव</th><th>Category</th><th>मोबाईल</th><th>Resume</th><th>सदस्यत्व</th><th></th></tr></thead><tbody>
+  ${candidates.map(c=>{
+    const resumeCell = c.resume_path ? '<a href="/uploads/'+encodeURIComponent(c.resume_path)+'" target="_blank" style="color:var(--marigold-dark);text-decoration:underline;">'+c.resume_path+'</a>' : '-';
+    const activateBtn = c.membership_active ? '' : '<button class="btn btn-green" data-activatecand="'+c.id+'">सदस्यत्व सक्रिय करा</button> ';
+    return '<tr><td>'+c.name+'</td><td>'+c.category+'</td><td>'+c.phone+'</td><td class="mono">'+resumeCell+'</td><td>'+(c.membership_active?'✅ सक्रिय':'❌ निष्क्रिय')+'</td><td>'+activateBtn+'<button class="btn btn-danger" data-deletecand="'+c.id+'">काढून टाका</button></td></tr>';
+  }).join('')}
+  </tbody></table>`;
 }
 async function adminJobs(){
   const jobs = await api('/admin/jobs');
-  return jobs.map(j=>`<div class="card">
-    <div class="job-title">${j.title}</div><div class="job-meta">${j.company_name} · ${j.category}</div>
-    <span class="badge-status badge-${j.status}">${statusLabel(j.status)}</span>
-    <div class="job-actions">
-      ${j.status!=='approved'?`<button class="btn btn-green" data-jobapprove="${j.id}:approved">मंजूर करा</button>`:''}
-      ${j.status!=='rejected'?`<button class="btn btn-danger" data-jobapprove="${j.id}:rejected">नाकारा</button>`:''}
-    </div></div>`).join('');
+  return `<table class="table"><thead><tr><th>पद</th><th>कंपनी</th><th>Category</th><th>स्थिती</th><th></th></tr></thead><tbody>
+  ${jobs.map(j=>`<tr><td>${j.title}</td><td>${j.company_name}</td><td>${j.category}</td>
+    <td><span class="badge-status badge-${j.status}">${statusLabel(j.status)}</span></td>
+    <td>${j.status!=='approved'?`<button class="btn btn-green" data-jobapprove="${j.id}:approved">मंजूर करा</button>`:''}
+        ${j.status!=='rejected'?`<button class="btn btn-danger" data-jobapprove="${j.id}:rejected">नाकारा</button>`:''}</td>
+  </tr>`).join('')}</tbody></table>`;
 }
 async function adminPayments(){
   const {rows, total} = await api('/admin/payments');
-  return `<div class="card"><b>एकूण जमा: ₹${total}</b></div>` + rows.map(p=>`<div class="card"><div class="job-title">₹${p.amount}</div><div class="job-meta">${p.user_type} #${p.user_id} · ${p.method} · ${p.created_at.slice(0,10)}</div></div>`).join('');
+  return `<p class="subtle" style="margin-bottom:10px;">एकूण जमा: <b>₹${total}</b></p>
+  <table class="table"><thead><tr><th>Type</th><th>User ID</th><th>रक्कम</th><th>माध्यम</th><th>तारीख</th></tr></thead><tbody>
+  ${rows.map(p=>`<tr><td>${p.user_type}</td><td>#${p.user_id}</td><td>₹${p.amount}</td><td>${p.method}</td><td>${p.created_at.slice(0,10)}</td></tr>`).join('')}
+  </tbody></table>`;
 }
-
-/* ---- NOTIFICATIONS (shared) ---- */
-async function notificationsView(){
-  const rows = await api('/notifications');
-  api('/notifications/read-all', {method:'PUT'}).catch(()=>{});
-  if(!rows.length) return `<div class="empty">कोणतीही सूचना नाही.</div>`;
-  return rows.map(n=>`<div class="notif-item">${n.unread?'<span class="notif-dot"></span>':''}<b>${n.title}</b>${n.body}</div>`).join('');
+async function adminMembership(){
+  const {companies, candidates} = await api('/admin/memberships');
+  return `<table class="table"><thead><tr><th>वापरकर्ता</th><th>प्रकार</th><th>स्थिती</th><th>संपण्याची तारीख</th></tr></thead><tbody>
+  ${companies.map(c=>`<tr><td>${c.name}</td><td>Company</td><td>${c.membership_active?'सक्रिय':'निष्क्रिय'}</td><td>${c.membership_expiry||'—'}</td></tr>`).join('')}
+  ${candidates.map(c=>`<tr><td>${c.name}</td><td>Job Seeker</td><td>${c.membership_active?'सक्रिय':'निष्क्रिय'}</td><td>${c.membership_expiry||'—'}</td></tr>`).join('')}
+  </tbody></table>`;
 }
 
 /* ============ HANDLERS ============ */
@@ -422,6 +474,9 @@ function attachHandlers(user){
 
   document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{ appState.page=b.dataset.page; render(); });
   document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{ appState.jobFilter=b.dataset.filter; render(); });
+  document.querySelectorAll('[data-seekertab]').forEach(b=>b.onclick=()=>{ appState.seekerTab=b.dataset.seekertab; render(); });
+  document.querySelectorAll('[data-companytab]').forEach(b=>b.onclick=()=>{ appState.companyTab=b.dataset.companytab; render(); });
+  document.querySelectorAll('[data-admintab]').forEach(b=>b.onclick=()=>{ appState.adminTab=b.dataset.admintab; render(); });
 
   document.querySelectorAll('[data-apply]').forEach(b=>b.onclick=async()=>{
     const jobId = Number(b.dataset.apply);
@@ -441,25 +496,21 @@ function attachHandlers(user){
       }
     }
   });
+  const upiPaidBtn = document.getElementById('upiPaidBtn');
+  if(upiPaidBtn) upiPaidBtn.onclick = async()=>{
+    try{
+      const endpoint = appState.upiModalRole === 'company' ? '/payments/notify-manual' : '/applications/notify-payment';
+      await api(endpoint, {method:'POST'});
+      alert('धन्यवाद! तुमचं पेमेंट Admin कडे पडताळणीसाठी पाठवलं आहे. साधारण काही तासांत सदस्यत्व सक्रिय होईल.');
+      appState.upiModalOpen = false;
+      render();
+    }catch(e){ alert(e.message); }
+  };
+  const upiCloseBtn = document.getElementById('upiCloseBtn');
+  if(upiCloseBtn) upiCloseBtn.onclick = ()=>{ appState.upiModalOpen = false; render(); };
   document.querySelectorAll('[data-deletejob]').forEach(b=>b.onclick=async()=>{
     if(!confirm('ही व्हॅकन्सी डिलीट करायची आहे का?')) return;
     try{ await api('/jobs/'+b.dataset.deletejob, {method:'DELETE'}); render(); }catch(e){ alert(e.message); }
-  });
-  document.querySelectorAll('[data-deletecand]').forEach(b=>b.onclick=async()=>{
-    if(!confirm('हा उमेदवार कायमचा डिलीट करायचा आहे का? त्याचे सर्व अर्जही मिटतील.')) return;
-    try{ await api('/admin/candidates/'+b.dataset.deletecand, {method:'DELETE'}); render(); }catch(e){ alert(e.message); }
-  });
-  document.querySelectorAll('[data-deleteco]').forEach(b=>b.onclick=async()=>{
-    if(!confirm('ही कंपनी कायमची डिलीट करायची आहे का? त्यांच्या सर्व व्हॅकन्सी व अर्जही मिटतील.')) return;
-    try{ await api('/admin/companies/'+b.dataset.deleteco, {method:'DELETE'}); render(); }catch(e){ alert(e.message); }
-  });
-  document.querySelectorAll('[data-activatecand]').forEach(b=>b.onclick=async()=>{
-    if(!confirm('या उमेदवाराचं ₹99 सदस्यत्व सक्रिय करायचं आहे का?')) return;
-    try{ await api('/admin/candidates/'+b.dataset.activatecand+'/activate-membership', {method:'PUT'}); alert('सदस्यत्व सक्रिय झालं.'); render(); }catch(e){ alert(e.message); }
-  });
-  document.querySelectorAll('[data-activateco]').forEach(b=>b.onclick=async()=>{
-    if(!confirm('या कंपनीचं ₹200 सदस्यत्व सक्रिय करायचं आहे का?')) return;
-    try{ await api('/admin/companies/'+b.dataset.activateco+'/activate-membership', {method:'PUT'}); alert('सदस्यत्व सक्रिय झालं.'); render(); }catch(e){ alert(e.message); }
   });
   document.querySelectorAll('[data-appstatus]').forEach(b=>b.onclick=async()=>{
     const [id,status]=b.dataset.appstatus.split(':');
@@ -473,6 +524,22 @@ function attachHandlers(user){
   document.querySelectorAll('[data-costatus]').forEach(b=>b.onclick=async()=>{
     const [id,status]=b.dataset.costatus.split(':');
     try{ await api('/admin/companies/'+id+'/status', {method:'PUT', body: JSON.stringify({status})}); render(); }catch(e){ alert(e.message); }
+  });
+  document.querySelectorAll('[data-deleteco]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('ही कंपनी कायमची डिलीट करायची आहे का? त्यांच्या सर्व व्हॅकन्सी व अर्जही मिटतील.')) return;
+    try{ await api('/admin/companies/'+b.dataset.deleteco, {method:'DELETE'}); render(); }catch(e){ alert(e.message); }
+  });
+  document.querySelectorAll('[data-deletecand]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('हा उमेदवार कायमचा डिलीट करायचा आहे का? त्याचे सर्व अर्जही मिटतील.')) return;
+    try{ await api('/admin/candidates/'+b.dataset.deletecand, {method:'DELETE'}); render(); }catch(e){ alert(e.message); }
+  });
+  document.querySelectorAll('[data-activatecand]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('या उमेदवाराचं ₹99 सदस्यत्व सक्रिय करायचं आहे का?')) return;
+    try{ await api('/admin/candidates/'+b.dataset.activatecand+'/activate-membership', {method:'PUT'}); alert('सदस्यत्व सक्रिय झालं.'); render(); }catch(e){ alert(e.message); }
+  });
+  document.querySelectorAll('[data-activateco]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('या कंपनीचं ₹200 सदस्यत्व सक्रिय करायचं आहे का?')) return;
+    try{ await api('/admin/companies/'+b.dataset.activateco+'/activate-membership', {method:'PUT'}); alert('सदस्यत्व सक्रिय झालं.'); render(); }catch(e){ alert(e.message); }
   });
   document.querySelectorAll('[data-jobapprove]').forEach(b=>b.onclick=async()=>{
     const [id,status]=b.dataset.jobapprove.split(':');
@@ -513,23 +580,8 @@ function attachHandlers(user){
     appState.upiModalRole = isCompany ? 'company' : 'candidate';
     render();
   };
-  const upiPaidBtn = document.getElementById('upiPaidBtn');
-  if(upiPaidBtn) upiPaidBtn.onclick = async()=>{
-    try{
-      const endpoint = appState.upiModalRole === 'company' ? '/payments/notify-manual' : '/applications/notify-payment';
-      await api(endpoint, {method:'POST'});
-      alert('धन्यवाद! तुमचं पेमेंट Admin कडे पडताळणीसाठी पाठवलं आहे. साधारण काही तासांत सदस्यत्व सक्रिय होईल.');
-      appState.upiModalOpen = false;
-      render();
-    }catch(e){ alert(e.message); }
-  };
-  const upiCloseBtn = document.getElementById('upiCloseBtn');
-  if(upiCloseBtn) upiCloseBtn.onclick = ()=>{ appState.upiModalOpen = false; render(); };
 }
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(()=>{});
-}
 render();
 </script>
 </body>
