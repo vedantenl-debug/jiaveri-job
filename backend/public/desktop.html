@@ -28,6 +28,16 @@ button{font-family:inherit;cursor:pointer;}
 #deskTopbar{display:flex;align-items:center;justify-content:space-between;padding:16px 30px;border-bottom:1px solid var(--line);background:#fff;}
 #deskContent{flex:1;padding:26px 30px;max-width:1180px;width:100%;}
 #deskGuest{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding:60px 20px;}
+#deskGuest .guest-wrap{display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap;max-width:920px;}
+.vision-panel{max-width:380px;text-align:left;}
+.vision-panel .vision-tag{display:inline-block;background:var(--marigold);color:var(--ink);font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:20px;margin-bottom:14px;}
+.vision-panel h2{font-family:'Archivo Black',sans-serif;font-size:26px;margin:0 0 12px;line-height:1.25;}
+.vision-panel p{color:var(--ink-soft);font-size:15px;line-height:1.6;margin:0 0 20px;}
+.founder-box{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;}
+.founder-box img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--marigold);flex-shrink:0;}
+.founder-box .fname{font-weight:800;font-size:14px;}
+.founder-box .frole{color:var(--ink-soft);font-size:12.5px;}
+@media (max-width:820px){#deskGuest .guest-wrap{flex-direction:column-reverse;}.vision-panel{text-align:center;}.founder-box{justify-content:center;}}
 .avatar{width:34px;height:34px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;}
 .btn{padding:10px 18px;border-radius:10px;border:none;font-weight:700;font-size:13.5px;}
 .btn-primary{background:var(--marigold);color:var(--ink);}
@@ -197,6 +207,16 @@ function renderGuest(){
   const showRegister = f.authRole !== 'admin';
   return `
 <div id="deskGuest">
+  <div class="guest-wrap">
+    <div class="vision-panel">
+      <span class="vision-tag">आमचं व्हिजन</span>
+      <h2>स्थानिक प्रतिभा, स्थानिक संधी — एका क्लिकवर.</h2>
+      <p>JobSetu हे लातूर जिल्ह्यातील तरुणांना विश्वासार्ह स्थानिक कंपन्यांशी थेट जोडण्यासाठी बनवलेलं व्यासपीठ आहे. आमचा उद्देश साधा आहे — प्रत्येक पात्र उमेदवाराला त्याच्या घराजवळ योग्य संधी मिळावी, आणि प्रत्येक कंपनीला भरवशाचे स्थानिक कर्मचारी मिळावेत.</p>
+      <div class="founder-box">
+        <img src="/founder.jpg" alt="Founder" onerror="this.style.display='none'">
+        <div><div class="fname">VEDANT R. POTDAR .</div><div class="frole">Founder, JobSetu</div></div>
+      </div>
+    </div>
   <div class="card modal-form" style="width:420px;background:#fff;text-align:left;">
     <div class="role-pick">
       <button data-role="candidate" class="${f.authRole==='candidate'?'active':''}">Job Seeker</button>
@@ -209,6 +229,7 @@ function renderGuest(){
     <div class="field"><label>Password</label><input id="passwordInput" type="password"></div>
     <button class="btn btn-primary" id="authSubmitBtn" style="width:100%;">${f.authMode==='register'?'Register':'Login'}</button>
     ${showRegister ? `<p style="text-align:center;margin-top:15px;">${f.authMode==='register'?'Already have an account?':'New User?'} <a id="toggleAuth" style="cursor:pointer;color:#1565c0;font-weight:bold;">${f.authMode==='register'?'Login':'Register'}</a></p>` : ''}
+  </div>
   </div>
 </div>
 `;
